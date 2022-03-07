@@ -1,0 +1,63 @@
+float factor = 0;
+int index = 0; // Starting point
+int num = 400;
+int r; 
+ArrayList<PVector> points;
+PFont f;
+
+void setup() 
+{
+  size(1920,1080);
+  translate(width/2, height/2);
+  r = ((height/2) - 50);
+  background(51);
+  noFill();
+  points = place_points(num);
+  textSize(50);
+  f = createFont("Arial", 24, true);
+}
+void draw_points(ArrayList<PVector> points) 
+{  
+  strokeWeight(2);
+  for (PVector p: points) 
+  {
+    point(p.x, p.y);  
+  }
+}
+ArrayList<PVector> place_points(int num) 
+{
+  ArrayList<PVector> points = new ArrayList();
+  float angle = PI;
+  float angle_step = TWO_PI / num;
+  for (int i = 0; i < num; i++) 
+  {
+    float new_angle = angle - (angle_step * i);
+    float x_cord = r*(cos(new_angle)); 
+    float y_cord = r*(sin(new_angle)); 
+    points.add(new PVector(x_cord, y_cord)); 
+  }
+  return points;
+}
+
+void draw() 
+{
+  background(51);
+  textFont(f, 64);
+  fill(250);
+  text(factor, width - 250, height - 50);
+  noFill();
+  translate(width/2, height/2);
+  circle(0, 0, r*2);
+  strokeWeight(.3);
+  
+  for (index=1; index<num; index++) 
+  {
+    int new_index = floor((index * factor)) % num;
+    PVector p1 = points.get(index);
+    PVector p2 = points.get(new_index);
+    stroke(map(mouseX, 0, 1920, 0, 255),map(new_index, 0, num-1, 0, 255),map(mouseY, 0, 1080, 0, 255), 100);
+    
+    line(p1.x, p1.y, p2.x, p2.y);
+  }
+  factor += 0.02;  
+}
